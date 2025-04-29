@@ -8,8 +8,8 @@ public class Tank {
     protected int speed =2;
     protected int x;
     protected int y;
-    protected  int dir;
-    protected static final int UP =0,RIGHT = 1,LEFT = 3, DOWN =2;
+    protected  DIR dir;
+
     protected Image image;
     protected int flag = 0;
     private int coolTime = 10;
@@ -18,7 +18,7 @@ public class Tank {
         try {
             x = ax;
             y = ay;
-            dir = 0;
+            dir = DIR.UP;
             File f = new File("C:\\Users\\range\\Downloads\\insect_sprite.png");
             image = ImageIO.read(f);
         } catch (Exception e) {
@@ -26,16 +26,20 @@ public class Tank {
         }
     }
 
-    public void setDir(int adir) {
+    public void setDir(DIR adir) {
         dir = adir;
     }
     public void move(){
         coolTime++;
         switch (dir){
-            case 0:y-=speed;break;
-            case 1:x+=speed;break;
-            case 2:y+=speed;break;
-            case 3:x-=speed;break;
+            case UP:y-=speed;break;
+            case RIGHT:x+=speed;break;
+            case DOWN:y+=speed;break;
+            case LEFT:x-=speed;break;
+        }
+        if(x <= 34 || y <= 34 || x >= GameFrame2.WIDTH-34 || y >= GameFrame2.HEIGHT-34){
+            int num = (dir.ordinal() + 2)%4;
+            dir = DIR.values()[num];
         }
     }
     public void draw( Graphics g){
@@ -44,7 +48,7 @@ public class Tank {
         * 当有dir时选择方法去实现
         * 同时使用flag去完成四个方向上的选择
         * */
-        g.drawImage(image,x,y,x+34,y+34,68*dir+flag*34,0,68*dir+flag*34+34,34,null);
+        g.drawImage(image,x,y,x+34,y+34,68*dir.ordinal()+flag*34,0,68*dir.ordinal()+flag*34+34,34,null);
         flag++;
         flag = flag == 2?0 :flag;
     }

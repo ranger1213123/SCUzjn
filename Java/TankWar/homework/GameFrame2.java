@@ -11,18 +11,19 @@ import static java.lang.Math.abs;
 
 
 public class GameFrame2 extends JFrame implements KeyListener {
-    private final int HEIGHT = 600;
-    private final int WIDTH = 600;//提高可维护性
+    public static final int HEIGHT = 600;
+    public static final int WIDTH = 600;//提高可维护性
     private Tank playerTank = new Tank(150,250);
     private  int[][] position = {{100,50},{300,50},{100,150}};
     private ArrayList<NpcTank> npcTanks = new ArrayList<NpcTank>();
     Image offScreenImage;//实现取消双闪烁,同时减少内存使用量
     private ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
+    private Boom cartoon;
     public GameFrame2() {
 
         setTitle("坦克大战");
 
-        setSize(500,300);
+        setSize(WIDTH,HEIGHT);
 
         setLocation(200, 100);
 
@@ -33,12 +34,11 @@ public class GameFrame2 extends JFrame implements KeyListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 var key = e.getKeyCode();
-                int dir = 0;
                 switch (key) {
-                    case KeyEvent.VK_UP:  playerTank.setDir(Tank.UP);break;
-                    case KeyEvent.VK_RIGHT: playerTank.setDir(Tank.RIGHT);break;
-                    case KeyEvent.VK_LEFT: playerTank.setDir(Tank.LEFT);break;
-                    case KeyEvent.VK_DOWN: playerTank.setDir(Tank.DOWN);break;
+                    case KeyEvent.VK_UP:  playerTank.setDir(DIR.UP);break;
+                    case KeyEvent.VK_RIGHT: playerTank.setDir(DIR.RIGHT);break;
+                    case KeyEvent.VK_LEFT: playerTank.setDir(DIR.LEFT);break;
+                    case KeyEvent.VK_DOWN: playerTank.setDir(DIR.DOWN);break;
                     case KeyEvent.VK_SPACE:
                             Bullet b = playerTank.fire();
                             if(b!=null)
@@ -77,6 +77,13 @@ public class GameFrame2 extends JFrame implements KeyListener {
                 b.draw(gOffScreen);
             }
         }
+        if(cartoon != null){
+            cartoon.draw(gOffScreen);
+            cartoon.frame_add();
+            if(cartoon.isFinish()){
+                cartoon = null;
+            }
+        }
         g.drawImage(offScreenImage,0,0,null);
 
     }
@@ -91,10 +98,10 @@ public class GameFrame2 extends JFrame implements KeyListener {
         var key = e.getKeyCode();
 
         switch (key) {
-            case KeyEvent.VK_UP:  playerTank.setDir(Tank.UP);break;
-            case KeyEvent.VK_RIGHT: playerTank.setDir(Tank.RIGHT);break;
-            case KeyEvent.VK_LEFT: playerTank.setDir(Tank.LEFT);break;
-            case KeyEvent.VK_DOWN: playerTank.setDir(Tank.DOWN);break;
+            case KeyEvent.VK_UP:  playerTank.setDir(DIR.UP);break;
+            case KeyEvent.VK_RIGHT: playerTank.setDir(DIR.RIGHT);break;
+            case KeyEvent.VK_LEFT: playerTank.setDir(DIR.LEFT);break;
+            case KeyEvent.VK_DOWN: playerTank.setDir(DIR.DOWN);break;
             case KeyEvent.VK_SPACE:
                     Bullet b = playerTank.fire();
                     if(b!=null)
@@ -113,10 +120,10 @@ public class GameFrame2 extends JFrame implements KeyListener {
         public void run() {
             while(true) {
                 Random rnd = new Random();
-                if(rnd.nextInt()%10 == 1){
+                if(rnd.nextInt()%10 == 5){
                     int p = abs(rnd.nextInt()%3);
                     NpcTank npcTank1 = new NpcTank(position[p][0],position[p][1]);
-                    npcTank1.setDir(Math.abs(rnd.nextInt()%4));
+                    npcTank1.setDir(DIR.values()[Math.abs(rnd.nextInt()%4)]);
                     npcTanks.add(npcTank1);
                 }
 
@@ -133,6 +140,7 @@ public class GameFrame2 extends JFrame implements KeyListener {
                         for(int j = npcTanks.size()-1;j>=0;j--){
                             NpcTank t = npcTanks.get(j);
                             if(b.isHitTank(t)){
+                                cartoon = new Boom(b.getX(),b.getY());
                                 npcTanks.remove(t);
                                 playerBullets.remove(b);
                                 break;
