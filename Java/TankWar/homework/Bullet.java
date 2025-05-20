@@ -1,23 +1,15 @@
 package homework;
 import java.awt.*;
-public class Bullet extends Tank{
-    public int getX(){
-        return this.x;
-    }
-    public int getY(){
-        return this.y;
-    }
+public class Bullet extends CommonBullet{
     public Bullet(int ax, int ay){
-        super(ax,ay);
-        speed=6;
+        super(ax,ay,6);
     }
-
     public void draw(Graphics g){
-        g.drawImage(image,x,y,x+34,y+34,5*34,6*34,6*34,7*34,null);
+        g.drawImage(img,x,y,x+34,y+34,5*34,6*34,6*34,7*34,null);
     }
-    public boolean isHitTank(Tank tank){
-        double dx = Math.pow(tank.x-x,2);
-        double dy = Math.pow(tank.y-y,2);
+    public boolean isHitTank(Sprite s){
+        double dx = Math.pow(s.x-x,2);
+        double dy = Math.pow(s.y-y,2);
         double d = Math.sqrt(dx + dy);
         return d < 30;
     }

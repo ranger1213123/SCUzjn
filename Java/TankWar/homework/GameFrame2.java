@@ -1,4 +1,5 @@
 package homework;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -12,15 +13,15 @@ import static java.lang.Math.abs;
 
 
 public class GameFrame2 extends JFrame implements KeyListener {
-    public static final int HEIGHT = 1200;
-    public static final int WIDTH = 1200;//提高可维护性
+    public static final int HEIGHT = 800;
+    public static final int WIDTH = 800;//提高可维护性
     private Tank playerTank = new Tank(150,250);
     private  int[][] position = {{100,50},{300,50},{100,150}};
-    private ArrayList<NpcTank> npcTanks = new ArrayList<NpcTank>();
+    private ArrayList<Sprite> npcTanks = new ArrayList<>();
     Image offScreenImage;//实现取消双闪烁,同时减少内存使用量
     private ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
     private ArrayList<Bullet> npcBullets = new ArrayList<>();
-    private ArrayList<Boom> cartoonsList = new ArrayList<>();
+    private ArrayList<Cartoon> cartoonsList = new ArrayList<>();
     private IFinish ifinish;
     private Map map;
     public GameFrame2(){
@@ -93,7 +94,7 @@ public class GameFrame2 extends JFrame implements KeyListener {
             }
         }
         for(int i = cartoonsList.size() - 1; i >= 0; i -- ){
-            Boom cartoon = cartoonsList.get(i);
+            Cartoon cartoon = cartoonsList.get(i);
             cartoon.draw(gOffScreen);
             if(cartoon.isFinish()){
                 cartoonsList.remove(cartoon);
@@ -158,7 +159,7 @@ public class GameFrame2 extends JFrame implements KeyListener {
                         b.move();
                         if(b.isHitTank(playerTank)){
                             cartoonsList.add(new Boom(b.getX(),b.getY()));//爆炸动画
-                            Reverse cartoon = new Reverse(WIDTH/2, HEIGHT/2);
+                            Revive cartoon = new Revive(WIDTH/2, HEIGHT/2);
                             //使用匿名类或者lambda表达式
                             cartoon.addListener(() -> {
                                 playerTank.setX(WIDTH/2);
@@ -183,7 +184,7 @@ public class GameFrame2 extends JFrame implements KeyListener {
                         playerBullets.remove(b);
                     }else {
                         for(int j = npcTanks.size()-1;j>=0;j--){
-                            NpcTank t = npcTanks.get(j);
+                            Sprite t = npcTanks.get(j);
                             if(b.isHitTank(t)){
                                 cartoonsList.add(new Boom(b.getX(),b.getY()));
                                 npcTanks.remove(t);

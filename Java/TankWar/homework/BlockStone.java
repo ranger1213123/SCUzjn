@@ -8,7 +8,6 @@ public class BlockStone extends Block {
     }
     @Override
     public void draw(Graphics g){
-        System.out.println("绘制 BlockStone：" + x + "," + y);
         g.drawImage(img,x,y,x+17,y + 17, 0, 6* 34,17,6*34 +17,null);
         g.drawImage(img,x+17,y,x+34,y + 17, 0, 6* 34,17,6*34 +17,null);
         g.drawImage(img,x,y+17,x+17,y + 34, 0, 6* 34,17,6*34 +17,null);
